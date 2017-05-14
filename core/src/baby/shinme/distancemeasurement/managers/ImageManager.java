@@ -125,4 +125,6 @@ public class ImageManager {
     public TextureRegion getCustomisePanel() { return atlas.findRegion("customise-panel"); }
 
     public TextureRegion getCustomiseTitle() { return atlas.findRegion("customise-title"); }
+
+    public TextureRegion getLeaderboardsComplex() { return atlas.findRegion("leaderboardsComplex"); }
 }

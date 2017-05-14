@@ -30,9 +30,9 @@ import baby.shinme.distancemeasurement.models.GameState;
  */
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
-    private static final int TILE_MIN_SPACING = 20;
+    private static final int TILE_MIN_SPACING = 15;
     private static final int TILE_MAX_SPACING = 71;
-    private static final int TILE_COUNT = 5;
+    private static final int TILE_COUNT = 7;
     private static final int TILE_HEIGHT = 48;
     private static final int HERO_WIDTH = 48;
 
@@ -53,7 +53,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Button gameOverRestartButton;
     private Button gameOverQuitButton;
     private TextureRegion gameOverMessage;
-    private TextureRegion pauseMenuBackground;
     private TextureRegion tutorialImage;
 
     private int backgroundRandomNumber;
@@ -62,8 +61,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private BitmapFont gameMainScoreBitmapFont;
     private BitmapFont gameMenuTitleBitmapFont;
     private BitmapFont gameMenuScoreBitmapFont;
+    private BitmapFont gameChainBitmapFont;
     private GlyphLayout layout;
-    private int score;
+    private float score;
     private int heroStartPositionX;
     private ShapeRenderer shapeRenderer;
     private Preferences prefs;
@@ -75,6 +75,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Button pauseSoundButton;
     private Button pauseQuitButton;
     private Button gamePauseButton;
+    private Color blackColor;
 
     private boolean isClicking = false;
     private boolean isFinishedClicking = false;
@@ -89,10 +90,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         gameMainScoreBitmapFont = game.fontProvider.getGameMainScoreBitmapFont();
         gameMenuTitleBitmapFont = game.fontProvider.getGameMenuTitleBitmapFont();
         gameMenuScoreBitmapFont = game.fontProvider.getGameMenuScoreBitmapFont();
+        gameChainBitmapFont = game.fontProvider.getGameChainBitmapFont();
         gameOverRestartButton = new Button(game.imageManager.getGameOverButtonPanel(), game.imageManager.getGameoverButtonRestart());
         gameOverQuitButton = new Button(game.imageManager.getGameOverButtonPanel(), game.imageManager.getGameoverButtonQuit());
         gameOverMessage = game.imageManager.getGameOverMainMessage();
-        pauseMenuBackground = game.imageManager.getPauseMenuBackground();
         pauseResumeButton = new Button(game.imageManager.getButtonSquareBeige(), game.imageManager.getForward());
         pauseRestartButton = new Button(game.imageManager.getButtonSquareBeige(), game.imageManager.getReturn());
         pauseQuitButton = new Button(game.imageManager.getButtonSquareBeige(), game.imageManager.getPower());
@@ -108,7 +109,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         gameOverPanel = game.imageManager.getGameOverPanel();
         layout = new GlyphLayout();
         shapeRenderer = new ShapeRenderer();
-        pauseShapeColor = new Color(0, 0, 0, 0.7f);
+        pauseShapeColor = new Color(0, 0, 0, 0.9f);
+        blackColor = new Color(0, 0, 0, 1);
         settingBackground();
         settingTile();
 
@@ -135,13 +137,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         game.camera.update();
         game.batch.begin();
 
-       // drawBackground();
+        drawBackground();
         drawBamboo();
 
         layout.setText(gameMainScoreBitmapFont, "SCORE");
         gameMainScoreBitmapFont.draw(game.batch, "SCORE", game.camera.position.x + game.camera.viewportWidth / 2 - layout.width - 10, 480);
-        layout.setText(gameMainScoreBitmapFont, String.valueOf(score));
-        gameMainScoreBitmapFont.draw(game.batch, String.valueOf(score), game.camera.position.x + game.camera.viewportWidth / 2 - layout.width - 10, 440);
+        layout.setText(gameMainScoreBitmapFont, String.valueOf((int) score));
+        gameMainScoreBitmapFont.draw(game.batch, layout, game.camera.position.x + game.camera.viewportWidth / 2 - layout.width - 10, 440);
 
         game.batch.draw((TextureRegion) hero.getCharacter().getKeyFrame(deltaTime, true),
                 hero.getPosition().x, hero.getPosition().y);
@@ -154,7 +156,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (isClicking && bambooDeltaTime >= 0.04 && !isFinishedClicking) {
             bambooDeltaTime = 0;
             game.soundManager.playBambooSound();
-            //game.soundManager.playClickSound();
             bamboo.buildingBamboo();
             if (bamboo.getBamboosLength() + TILE_HEIGHT == game.HEIGHT) {
                 isClicking = false;
@@ -178,21 +179,28 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         gamePauseButton.setPos(positionXZero + 20, game.HEIGHT - 60);
         gamePauseButton.draw(game.batch);
 
-        if (gameState == GameState.GAMEOVER) {
-            drawGameOver();
-        }
-
         game.batch.end();
 
+        if (gameState == GameState.GAMEOVER) {
+            drawGameOver();
+            game.handler.showAds(true);
+        }
+
         if (gameState == GameState.TUTORIAL) {
+            game.handler.showAds(true);
             drawBlackAlphaScreen();
             game.batch.begin();
             game.batch.draw(tutorialImage, game.camera.position.x - tutorialImage.getRegionWidth() / 2, game.HEIGHT / 2 - tutorialImage.getRegionHeight() / 2);
             game.batch.end();
         }
 
+        if (gameState == GameState.PLAY) {
+            game.handler.showAds(false);
+        }
+
         if (gameState == GameState.PAUSE) {
             pauseMenu();
+            game.handler.showAds(false);
         }
     }
 
@@ -209,20 +217,28 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private void pauseMenu() {
         drawBlackAlphaScreen();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        shapeRenderer.setProjectionMatrix(game.camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(blackColor);
+        shapeRenderer.rect(game.camera.position.x - game.camera.viewportWidth / 2, 185, game.WIDTH, 110);
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
 
         float positionXZero = game.camera.position.x - game.camera.viewportWidth / 2;
         game.batch.begin();
-        game.batch.draw(pauseMenuBackground, positionXZero, 0);
-        pauseResumeButton.setPos(positionXZero + (pauseMenuBackground.getRegionWidth() / 2) - pauseResumeButton.getRegionWidth() / 2, 375);
+//        game.batch.draw(pauseMenuBackground, positionXZero, 0);
+        pauseResumeButton.setPos(positionXZero + 133 - pauseResumeButton.getRegionWidth() / 2, 212.5f);
         pauseResumeButton.draw(game.batch);
-        pauseRestartButton.setPos(positionXZero + (pauseMenuBackground.getRegionWidth() / 2) - pauseRestartButton.getRegionWidth() / 2, 295);
+        pauseRestartButton.setPos(positionXZero + 266 - pauseRestartButton.getRegionWidth() / 2, 212.5f);
         pauseRestartButton.draw(game.batch);
-        pauseQuitButton.setPos(positionXZero + (pauseMenuBackground.getRegionWidth() / 2) - pauseQuitButton.getRegionWidth() / 2, 215);
-        pauseQuitButton.draw(game.batch);
-        pauseMusicButton.setPos(positionXZero + (pauseMenuBackground.getRegionWidth() / 2) - pauseMusicButton.getRegionWidth() / 2, 135);
+        pauseMusicButton.setPos(positionXZero + 400 - pauseMusicButton.getRegionWidth() / 2, 212.5f);
         pauseMusicButton.draw(game.batch);
-        pauseSoundButton.setPos(positionXZero + (pauseMenuBackground.getRegionWidth() / 2) - pauseSoundButton.getRegionWidth() / 2, 55);
+        pauseSoundButton.setPos(positionXZero + 534 - pauseSoundButton.getRegionWidth() / 2, 212.5f);
         pauseSoundButton.draw(game.batch);
+        pauseQuitButton.setPos(positionXZero + 667 - pauseQuitButton.getRegionWidth() / 2, 212.5f);
+        pauseQuitButton.draw(game.batch);
         game.batch.end();
     }
 
@@ -274,19 +290,21 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     }
 
     private void drawGameOver() {
+        drawBlackAlphaScreen();
         game.soundManager.stopInGameBackgroundMusic();
         game.soundManager.loopGameOverMusic();
+        game.batch.begin();
         game.batch.draw(gameOverMessage, game.camera.position.x - gameOverMessage.getRegionWidth() / 2, 320);
         game.batch.draw(gameOverPanel, game.camera.position.x - gameOverPanel.getRegionWidth() / 2, 80);
         gameMenuTitleBitmapFont.draw(game.batch, "SCORE", game.camera.position.x + 125, 250);
-        layout.setText(gameMenuScoreBitmapFont, String.valueOf(score));
-        gameMenuScoreBitmapFont.draw(game.batch, String.valueOf(score), game.camera.position.x + 210 - layout.width, 230);
+        layout.setText(gameMenuScoreBitmapFont, String.valueOf((int) score));
+        gameMenuScoreBitmapFont.draw(game.batch, layout, game.camera.position.x + 210 - layout.width, 230);
         gameMenuTitleBitmapFont.draw(game.batch, "BEST", game.camera.position.x + 137, 170);
         int best = prefs.getInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY);
         if (score > best) {
-            prefs.putInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, score);
+            prefs.putInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, (int) score);
             prefs.flush();
-            best = score;
+            best = (int) score;
         }
         layout.setText(gameMenuScoreBitmapFont, String.valueOf(best));
         gameMenuScoreBitmapFont.draw(game.batch, String.valueOf(best), game.camera.position.x + 210 - layout.width, 150);
@@ -295,6 +313,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         gameOverRestartButton.draw(game.batch);
         gameOverQuitButton.setPos(game.camera.position.x - 210, 115);
         gameOverQuitButton.draw(game.batch);
+        game.batch.end();
     }
 
     private void moveHero(int nextTileNumber) {
@@ -312,10 +331,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             reset();
         } else {
             hero.walk();
-            moveToNextTile();
+            moveToNextTile(nextTileNumber);
         }
 
-        score = ((int) hero.getPosition().x - heroStartPositionX) / 6;
+        if (nextTileNumber > 1) {
+            layout.setText(gameChainBitmapFont, nextTileNumber + " CHAIN");
+            gameChainBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 450);
+        }
     }
 
     private void reset() {
@@ -325,8 +347,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         bamboo.setPositionX(tiles.get(0).getPositionX() + tiles.get(0).getWidth());
     }
 
-    private void moveToNextTile() {
+    private void moveToNextTile(int nextTileNumber) {
         hero.getPosition().x += 3;
+        score += (0.5 * nextTileNumber);
+        //TODO chain 2!!
     }
 
     private int checkNextTileWithBambooLength() {

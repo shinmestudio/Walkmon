@@ -11,7 +11,6 @@ public class SoundManager {
 
 	private boolean isSoundOn = true;
 	private boolean isMusicOn = true;
-	private Sound clickSound;
 	private Sound bambooSound;
 	private Music inGameBackgroundMusic;
 	private Music mainMenuBackgroundMusic;
@@ -84,7 +83,6 @@ public class SoundManager {
 		}
 
 		bambooSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bamboo.wav"));
-		clickSound = Gdx.audio.newSound(Gdx.files.internal("sounds/click.wav"));
 		inGameBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/game-background.mp3"));
 		inGameBackgroundMusic.setLooping(true);
 		mainMenuBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/main-background.mp3"));
@@ -93,12 +91,6 @@ public class SoundManager {
 		gameoverMusic.setLooping(true);
 		creditMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/credit.mp3"));
 		creditMusic.setLooping(true);
-	}
-
-	public void playClickSound() {
-		if (isSoundOn) {
-			clickSound.play();
-		}
 	}
 
 	public void playBambooSound() {
@@ -153,7 +145,6 @@ public class SoundManager {
 		inGameBackgroundMusic.dispose();
 		mainMenuBackgroundMusic.dispose();
 		gameoverMusic.dispose();
-		clickSound.dispose();
 		creditMusic.dispose();
 	}
 }

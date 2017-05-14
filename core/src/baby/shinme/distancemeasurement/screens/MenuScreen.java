@@ -41,11 +41,12 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
     private int backgroundRandomNumber;
     private Random rand;
     private Button playButton;
-//    private Button medalButton;
     private Button unlockedButton;
     private Button informationButton;
     private Button musicButton;
     private Button soundButton;
+    private Button leaderBoardButton;
+    private Button quitButton;
     private Vector3 beforeTouch;
     private Preferences prefs;
     private Character character;
@@ -96,7 +97,8 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         }
 
         playButton = new Button(game.imageManager.getButtonBigYellowDown(), game.imageManager.getRightBig());
-//        medalButton = new Button(game.imageManager.getButtonNormalYellowDown(), game.imageManager.getMedal());
+        leaderBoardButton = new Button(game.imageManager.getButtonSmallYellowDown(), game.imageManager.getLeaderboardsComplex());
+        quitButton = new Button(game.imageManager.getButtonSmallYellowDown(), game.imageManager.getPower());
         unlockedButton = new Button(game.imageManager.getButtonNormalYellowDown(), game.imageManager.getUnlocked());
         informationButton = new Button(game.imageManager.getButtonNormalYellowDown(), game.imageManager.getInformation());
         musicButton = new Button(game.imageManager.getButtonSmallYellowDown(),
@@ -130,6 +132,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
         Gdx.gl.glClearColor(1, 0, 0, 1);
+        game.handler.showAds(true);
     }
 
     @Override
@@ -149,11 +152,15 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         informationButton.setPos(playButton.getPosX() - 100 - informationButton.getRegionWidth(), 115);
         musicButton.setPos(unlockedButton.getPosX() + unlockedButton.getRegionWidth() / 2 - musicButton.getRegionWidth() - 10, unlockedButton.getPosY() + unlockedButton.getRegionHeight() + 10);
         soundButton.setPos(unlockedButton.getPosX() + unlockedButton.getRegionWidth() / 2 + 10, unlockedButton.getPosY() + unlockedButton.getRegionHeight() + 10);
+        quitButton.setPos(informationButton.getPosX() + informationButton.getRegionWidth() / 2 - quitButton.getRegionWidth() - 10, informationButton.getPosY() + informationButton.getRegionHeight() + 10);
+        leaderBoardButton.setPos(informationButton.getPosX() + informationButton.getRegionWidth() / 2 + 10, informationButton.getPosY() + informationButton.getRegionHeight() + 10);
         playButton.draw(game.batch);
         unlockedButton.draw(game.batch);
         informationButton.draw(game.batch);
         musicButton.draw(game.batch);
         soundButton.draw(game.batch);
+        quitButton.draw(game.batch);
+        leaderBoardButton.draw(game.batch);
 
         for (int i = 0; i < tiles.size; i++) {
             Tile tile = tiles.get(i);
@@ -340,6 +347,10 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
                     game.soundManager.setSoundOn(true);
                 }
                 prefs.flush();
+            } else if (quitButton.isPressed(beforeTouch) && quitButton.isPressed(touch)) {
+                Gdx.app.exit();
+            } else if (leaderBoardButton.isPressed(beforeTouch) && leaderBoardButton.isPressed(touch)) {
+                //TODO google leaderboards
             }
         } else if (state == MainMenuState.CREDITS) {
             state = MainMenuState.NOMAL;

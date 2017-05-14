@@ -18,6 +18,7 @@ public class FontProvider {
 	private BitmapFont creditsTitleBitmapFont;
 	private BitmapFont creditsContentsBitmapFont;
 	private BitmapFont customiseLockedMessageBitmapFont;
+	private BitmapFont gameChainBitmapFont;
 
 	
 	public FontProvider() {
@@ -53,6 +54,10 @@ public class FontProvider {
 		fontParameter.size = 20;
 		customiseLockedMessageBitmapFont = generator.generateFont(fontParameter);
 
+		fontParameter.color = Color.YELLOW;
+		fontParameter.size = 35;
+		gameChainBitmapFont = generator.generateFont(fontParameter);
+
 	}
 
 	public BitmapFont getGameMainScoreBitmapFont() {
@@ -72,6 +77,8 @@ public class FontProvider {
 	public BitmapFont getCreditsContentsBitmapFont() { return creditsContentsBitmapFont; }
 
 	public BitmapFont getCustomiseLockedMessageBitmapFont() { return customiseLockedMessageBitmapFont; }
+
+	public BitmapFont getGameChainBitmapFont() { return gameChainBitmapFont; }
 
 	public void dispose() {
 		if (generator != null) {
