@@ -1,0 +1,809 @@
+
+texture.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+audioOff
+  rotate: false
+  xy: 964, 47
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+background
+  rotate: false
+  xy: 2, 542
+  size: 960, 480
+  orig: 960, 480
+  offset: 0, 0
+  index: 0
+background
+  rotate: false
+  xy: 2, 60
+  size: 960, 480
+  orig: 960, 480
+  offset: 0, 0
+  index: 1
+bamboo
+  rotate: false
+  xy: 997, 40
+  size: 10, 5
+  orig: 10, 5
+  offset: 0, 0
+  index: -1
+buttonSmall-yellow-down
+  rotate: false
+  xy: 964, 967
+  size: 55, 55
+  orig: 55, 55
+  offset: 0, 0
+  index: -1
+buttonSquare-beige
+  rotate: false
+  xy: 964, 910
+  size: 55, 55
+  orig: 55, 55
+  offset: 0, 0
+  index: -1
+gameover-button-panel
+  rotate: false
+  xy: 2, 4
+  size: 230, 54
+  orig: 230, 54
+  offset: 0, 0
+  index: -1
+gameover-button-quit
+  rotate: false
+  xy: 446, 6
+  size: 99, 52
+  orig: 99, 52
+  offset: 0, 0
+  index: -1
+gameover-button-restart
+  rotate: false
+  xy: 234, 6
+  size: 210, 52
+  orig: 210, 52
+  offset: 0, 0
+  index: -1
+hero0-stand
+  rotate: false
+  xy: 964, 261
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 0
+hero0-stand
+  rotate: false
+  xy: 964, 207
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 1
+hero0-stand
+  rotate: false
+  xy: 964, 153
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 2
+hero0-stand
+  rotate: false
+  xy: 964, 153
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 4
+hero0-stand
+  rotate: false
+  xy: 964, 99
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 3
+hero1-stand
+  rotate: false
+  xy: 547, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 0
+hero1-stand
+  rotate: false
+  xy: 597, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 1
+hero1-stand
+  rotate: false
+  xy: 647, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 2
+hero1-stand
+  rotate: false
+  xy: 697, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 3
+hero1-stand
+  rotate: false
+  xy: 747, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 4
+hero1-stand
+  rotate: false
+  xy: 797, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 5
+hero1-walk
+  rotate: false
+  xy: 847, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 0
+hero1-walk
+  rotate: false
+  xy: 897, 2
+  size: 48, 56
+  orig: 48, 56
+  offset: 0, 0
+  index: 1
+hero4-stand
+  rotate: false
+  xy: 964, 850
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 0
+hero4-stand
+  rotate: false
+  xy: 964, 790
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 1
+hero4-walk
+  rotate: false
+  xy: 964, 790
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 0
+hero4-stand
+  rotate: false
+  xy: 964, 790
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 5
+hero4-stand
+  rotate: false
+  xy: 964, 730
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 2
+hero4-stand
+  rotate: false
+  xy: 964, 730
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 4
+hero4-stand
+  rotate: false
+  xy: 964, 670
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 3
+hero4-walk
+  rotate: false
+  xy: 964, 610
+  size: 48, 58
+  orig: 48, 58
+  offset: 0, 0
+  index: 1
+hero6-stand
+  rotate: false
+  xy: 964, 551
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 0
+hero6-stand
+  rotate: false
+  xy: 964, 492
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 1
+hero6-stand
+  rotate: false
+  xy: 964, 492
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 5
+hero6-walk
+  rotate: false
+  xy: 964, 492
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 0
+hero6-stand
+  rotate: false
+  xy: 964, 433
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 2
+hero6-stand
+  rotate: false
+  xy: 964, 433
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 4
+hero6-stand
+  rotate: false
+  xy: 964, 374
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 3
+hero6-walk
+  rotate: false
+  xy: 964, 315
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 1
+hero8-stand
+  rotate: false
+  xy: 947, 4
+  size: 48, 41
+  orig: 48, 41
+  offset: 0, 0
+  index: 0
+
+texture2.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+audioOn
+  rotate: false
+  xy: 964, 968
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+background
+  rotate: false
+  xy: 2, 538
+  size: 960, 480
+  orig: 960, 480
+  offset: 0, 0
+  index: 2
+background
+  rotate: false
+  xy: 2, 56
+  size: 960, 480
+  orig: 960, 480
+  offset: 0, 0
+  index: 3
+cross
+  rotate: false
+  xy: 964, 916
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+forward
+  rotate: false
+  xy: 964, 864
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+hero0-stand
+  rotate: false
+  xy: 964, 550
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 5
+hero0-walk
+  rotate: false
+  xy: 964, 496
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 0
+hero0-walk
+  rotate: false
+  xy: 2, 2
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: 1
+hero2-stand
+  rotate: false
+  xy: 964, 247
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 0
+hero2-walk
+  rotate: false
+  xy: 964, 247
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 0
+hero2-stand
+  rotate: false
+  xy: 964, 198
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 1
+hero2-stand
+  rotate: false
+  xy: 964, 198
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 5
+hero2-stand
+  rotate: false
+  xy: 964, 149
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 2
+hero2-stand
+  rotate: false
+  xy: 964, 149
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 4
+hero2-stand
+  rotate: false
+  xy: 964, 100
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 3
+hero3-stand
+  rotate: false
+  xy: 52, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 0
+hero3-walk
+  rotate: false
+  xy: 52, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 0
+hero3-stand
+  rotate: false
+  xy: 102, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 1
+hero3-stand
+  rotate: false
+  xy: 102, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 5
+hero3-stand
+  rotate: false
+  xy: 152, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 2
+hero3-stand
+  rotate: false
+  xy: 152, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 4
+hero3-stand
+  rotate: false
+  xy: 202, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 3
+hero3-walk
+  rotate: false
+  xy: 252, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 1
+hero7-stand
+  rotate: false
+  xy: 302, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 0
+hero7-stand
+  rotate: false
+  xy: 352, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 1
+hero7-stand
+  rotate: false
+  xy: 352, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 5
+hero7-stand
+  rotate: false
+  xy: 402, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 2
+hero7-stand
+  rotate: false
+  xy: 402, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 4
+hero7-stand
+  rotate: false
+  xy: 452, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 3
+hero7-walk
+  rotate: false
+  xy: 502, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 0
+hero7-walk
+  rotate: false
+  xy: 552, 3
+  size: 48, 51
+  orig: 48, 51
+  offset: 0, 0
+  index: 1
+hero8-stand
+  rotate: false
+  xy: 964, 57
+  size: 48, 41
+  orig: 48, 41
+  offset: 0, 0
+  index: 1
+hero8-stand
+  rotate: false
+  xy: 964, 57
+  size: 48, 41
+  orig: 48, 41
+  offset: 0, 0
+  index: 5
+musicOff
+  rotate: false
+  xy: 964, 812
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+musicOn
+  rotate: false
+  xy: 964, 760
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+pause
+  rotate: false
+  xy: 964, 708
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+power
+  rotate: false
+  xy: 964, 656
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+return
+  rotate: false
+  xy: 964, 604
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+tile0
+  rotate: false
+  xy: 602, 6
+  size: 96, 48
+  orig: 96, 48
+  offset: 0, 0
+  index: 1
+tile0
+  rotate: false
+  xy: 964, 446
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: 0
+tile1
+  rotate: false
+  xy: 700, 6
+  size: 96, 48
+  orig: 96, 48
+  offset: 0, 0
+  index: 1
+tile1
+  rotate: false
+  xy: 964, 396
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: 0
+tile2
+  rotate: false
+  xy: 798, 6
+  size: 96, 48
+  orig: 96, 48
+  offset: 0, 0
+  index: 1
+tile2
+  rotate: false
+  xy: 964, 346
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: 0
+tile3
+  rotate: false
+  xy: 896, 6
+  size: 96, 48
+  orig: 96, 48
+  offset: 0, 0
+  index: 1
+tile3
+  rotate: false
+  xy: 964, 296
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: 0
+
+texture3.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+buttonBig-yellow-down
+  rotate: false
+  xy: 865, 753
+  size: 157, 144
+  orig: 157, 144
+  offset: 0, 0
+  index: -1
+buttonNormal-yellow-down
+  rotate: false
+  xy: 706, 648
+  size: 98, 90
+  orig: 98, 90
+  offset: 0, 0
+  index: -1
+customise-panel
+  rotate: false
+  xy: 2, 442
+  size: 550, 200
+  orig: 550, 200
+  offset: 0, 0
+  index: -1
+customise-title
+  rotate: false
+  xy: 2, 48
+  size: 461, 88
+  orig: 461, 88
+  offset: 0, 0
+  index: -1
+gameover
+  rotate: false
+  xy: 504, 899
+  size: 478, 85
+  orig: 478, 85
+  offset: 0, 0
+  index: -1
+gameover-panel
+  rotate: false
+  xy: 2, 240
+  size: 550, 200
+  orig: 550, 200
+  offset: 0, 0
+  index: -1
+hero2-walk
+  rotate: false
+  xy: 504, 850
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 1
+hero5-stand
+  rotate: false
+  xy: 504, 801
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 0
+hero5-stand
+  rotate: false
+  xy: 504, 752
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 1
+hero5-walk
+  rotate: false
+  xy: 504, 752
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 0
+hero5-stand
+  rotate: false
+  xy: 504, 752
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 5
+hero5-stand
+  rotate: false
+  xy: 504, 703
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 2
+hero5-stand
+  rotate: false
+  xy: 504, 703
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 4
+hero5-stand
+  rotate: false
+  xy: 504, 654
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 3
+hero5-walk
+  rotate: false
+  xy: 504, 654
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: 1
+hero8-stand
+  rotate: false
+  xy: 554, 277
+  size: 48, 41
+  orig: 48, 41
+  offset: 0, 0
+  index: 2
+hero8-stand
+  rotate: false
+  xy: 554, 277
+  size: 48, 41
+  orig: 48, 41
+  offset: 0, 0
+  index: 4
+hero8-stand
+  rotate: false
+  xy: 651, 374
+  size: 48, 41
+  orig: 48, 41
+  offset: 0, 0
+  index: 3
+hero8-walk
+  rotate: false
+  xy: 2, 2
+  size: 48, 44
+  orig: 48, 44
+  offset: 0, 0
+  index: 0
+hero8-walk
+  rotate: false
+  xy: 465, 92
+  size: 48, 44
+  orig: 48, 44
+  offset: 0, 0
+  index: 1
+information
+  rotate: false
+  xy: 706, 556
+  size: 90, 90
+  orig: 90, 90
+  offset: 0, 0
+  index: -1
+locked
+  rotate: false
+  xy: 984, 944
+  size: 35, 40
+  orig: 35, 40
+  offset: 0, 0
+  index: -1
+medal
+  rotate: false
+  xy: 554, 320
+  size: 95, 95
+  orig: 95, 95
+  offset: 0, 0
+  index: -1
+pause-menu-background
+  rotate: false
+  xy: 554, 417
+  size: 150, 480
+  orig: 150, 480
+  offset: 0, 0
+  index: -1
+rightBig
+  rotate: false
+  xy: 706, 740
+  size: 157, 157
+  orig: 157, 157
+  offset: 0, 0
+  index: -1
+title
+  rotate: false
+  xy: 2, 138
+  size: 617, 100
+  orig: 617, 100
+  offset: 0, 0
+  index: -1
+tutorial
+  rotate: false
+  xy: 2, 644
+  size: 500, 340
+  orig: 500, 340
+  offset: 0, 0
+  index: -1
+unlocked
+  rotate: false
+  xy: 706, 464
+  size: 90, 90
+  orig: 90, 90
+  offset: 0, 0
+  index: -1
