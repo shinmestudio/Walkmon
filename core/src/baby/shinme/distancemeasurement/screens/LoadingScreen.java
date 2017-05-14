@@ -37,6 +37,7 @@ public class LoadingScreen extends ScreenAdapter {
         deltaTime += delta;
 
         if (deltaTime > 0.1 && firstLoad) {
+            //TODO check what make time lack.
             game.imageManager = new ImageManager();
             game.imageManager.load();
             game.soundManager = new SoundManager();

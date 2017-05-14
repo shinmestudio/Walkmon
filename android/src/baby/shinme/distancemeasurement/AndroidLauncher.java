@@ -1,5 +1,7 @@
 package baby.shinme.distancemeasurement;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +15,8 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.GameHelper;
 
 import baby.shinme.distancemeasurement.handler.GPGSHandler;
 
@@ -21,7 +25,9 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 	private final int SHOW_ADS = 1;
 	private final int HIDE_ADS = 0;
 	protected AdView adView;
-
+	private GameHelper gameHelper;
+	private final static int requestCode = 1;
+	private static final String ACHIEVEMENT_CODE = "CgkIzafSgekTEAIQAQ";
 
 	Handler handler = new Handler() {
 
@@ -42,6 +48,20 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+		gameHelper.enableDebugLog(false);
+
+		GameHelper.GameHelperListener gameHelperListener = new GameHelper.GameHelperListener()
+		{
+			@Override
+			public void onSignInFailed(){ }
+
+			@Override
+			public void onSignInSucceeded(){ }
+		};
+
+		gameHelper.setup(gameHelperListener);
 
 		RelativeLayout layout = new RelativeLayout(this);
 
@@ -71,13 +91,82 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 
 		layout.addView(adView, adParams);
 		adView.loadAd(builder.build());
-
-
 		setContentView(layout);
 	}
 
 	@Override
 	public void showAds(boolean show) {
 		handler.sendEmptyMessage(show ? SHOW_ADS : HIDE_ADS);
+	}
+
+	@Override
+	public void signIn() {
+		try {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					gameHelper.beginUserInitiatedSignIn();
+				}
+			});
+		}
+		catch (Exception e) {
+			Log.e("MainActivity", "Log in failed: " + e.getMessage() + ".");
+		}
+	}
+
+	@Override
+	public void signOut() {
+		try {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					gameHelper.signOut();
+				}
+			});
+		} catch (Exception e) {
+			Log.e("MainActivity", "Log out failed: " + e.getMessage() + ".");
+		}
+	}
+
+	@Override
+	public void rateGame() {
+		String str = "Your PlayStore Link";
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
+	}
+
+	@Override
+	public void unlockAchievement() {
+			Games.Achievements.unlock(gameHelper.getApiClient(), ACHIEVEMENT_CODE);
+	}
+
+	@Override
+	public void submitScore(int highScore) {
+		if (isSignedIn() == true) {
+			Games.Leaderboards.submitScore(gameHelper.getApiClient(), "CgkIzafSgekTEAIQAA", highScore);
+		}
+	}
+
+	@Override
+	public void showAchievement() {
+		if (isSignedIn() == true) {
+			startActivityForResult(Games.Achievements.getAchievementsIntent(gameHelper.getApiClient()), requestCode);
+		} else {
+			signIn();
+		}
+	}
+
+	@Override
+	public void showScore() {
+		if (isSignedIn() == true) {
+			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(), "CgkIzafSgekTEAIQAA"), requestCode);
+		} else {
+			signIn();
+		}
+	}
+
+	@Override
+	public boolean isSignedIn() {
+		System.out.println("gameHelper : " + gameHelper);
+		return gameHelper.isSignedIn();
 	}
 }

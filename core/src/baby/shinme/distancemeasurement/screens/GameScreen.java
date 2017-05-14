@@ -30,7 +30,7 @@ import baby.shinme.distancemeasurement.models.GameState;
  */
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
-    private static final int TILE_MIN_SPACING = 15;
+    private static final int TILE_MIN_SPACING = 10;
     private static final int TILE_MAX_SPACING = 71;
     private static final int TILE_COUNT = 7;
     private static final int TILE_HEIGHT = 48;
@@ -64,6 +64,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private BitmapFont gameChainBitmapFont;
     private GlyphLayout layout;
     private float score;
+    private int best;
     private int heroStartPositionX;
     private ShapeRenderer shapeRenderer;
     private Preferences prefs;
@@ -120,6 +121,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hero.stand();
         heroStartPositionX = (int) hero.getPosition().x;
         bamboo = new Bamboo(tiles.get(0).getPositionX() + tiles.get(0).getWidth(), game.imageManager);
+        best = prefs.getInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
         Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -200,7 +202,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         if (gameState == GameState.PAUSE) {
             pauseMenu();
-            game.handler.showAds(false);
+            game.handler.showAds(true);
         }
     }
 
@@ -228,7 +230,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         float positionXZero = game.camera.position.x - game.camera.viewportWidth / 2;
         game.batch.begin();
-//        game.batch.draw(pauseMenuBackground, positionXZero, 0);
         pauseResumeButton.setPos(positionXZero + 133 - pauseResumeButton.getRegionWidth() / 2, 212.5f);
         pauseResumeButton.draw(game.batch);
         pauseRestartButton.setPos(positionXZero + 266 - pauseRestartButton.getRegionWidth() / 2, 212.5f);
@@ -300,7 +301,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         layout.setText(gameMenuScoreBitmapFont, String.valueOf((int) score));
         gameMenuScoreBitmapFont.draw(game.batch, layout, game.camera.position.x + 210 - layout.width, 230);
         gameMenuTitleBitmapFont.draw(game.batch, "BEST", game.camera.position.x + 137, 170);
-        int best = prefs.getInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY);
         if (score > best) {
             prefs.putInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, (int) score);
             prefs.flush();
@@ -329,6 +329,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             hero.stand();
             hero.getPosition().x = nextTile.getPositionX() + nextTile.getWidth() / 2 - HERO_WIDTH / 2;
             reset();
+            if (score > best) {
+                prefs.putInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, (int) score);
+                prefs.flush();
+                best = (int) score;
+            }
         } else {
             hero.walk();
             moveToNextTile(nextTileNumber);
@@ -350,7 +355,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private void moveToNextTile(int nextTileNumber) {
         hero.getPosition().x += 3;
         score += (0.5 * nextTileNumber);
-        //TODO chain 2!!
     }
 
     private int checkNextTileWithBambooLength() {
