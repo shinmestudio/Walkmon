@@ -20,6 +20,7 @@ import java.util.Random;
 import baby.shinme.distancemeasurement.DistanceMeasurement;
 import baby.shinme.distancemeasurement.constants.GameConstant;
 import baby.shinme.distancemeasurement.models.Button;
+import baby.shinme.distancemeasurement.models.GameMode;
 import baby.shinme.distancemeasurement.sprites.Bamboo;
 import baby.shinme.distancemeasurement.sprites.Character;
 import baby.shinme.distancemeasurement.sprites.Tile;
@@ -40,6 +41,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private float deltaTime;
     private float bambooDeltaTime;
     private float stopWatchDeltaTime;
+    private float timeAttackDeltaTime;
 
     private TextureRegion background1;
     private TextureRegion background2;
@@ -77,12 +79,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private Button pauseQuitButton;
     private Button gamePauseButton;
     private Color blackColor;
+    private GameMode gameMode;
+    private BitmapFont timeAttackNomalBitmapFont;
+    private BitmapFont timeAttackWarningBitmapFont;
 
     private boolean isClicking = false;
     private boolean isFinishedClicking = false;
 
-    public GameScreen(DistanceMeasurement game) {
+    public GameScreen(DistanceMeasurement game, GameMode gameMode) {
         this.game = game;
+        this.gameMode = gameMode;
         game.camera.setToOrtho(false, game.WIDTH, game.HEIGHT);
         prefs = Gdx.app.getPreferences(GameConstant.PREFERENCES_KEY_NAME);
 
@@ -115,13 +121,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         settingBackground();
         settingTile();
 
-        gameState = prefs.getBoolean(GameConstant.FINISHED_TUTORIAL_KEY, false) ? GameState.PLAY : GameState.TUTORIAL;
+        //gameState = prefs.getBoolean(GameConstant.FINISHED_TUTORIAL_KEY, false) ? GameState.PLAY : GameState.TUTORIAL;
+        gameState = GameState.TUTORIAL;
 
         hero = new Character(prefs.getInteger(GameConstant.CHARACTER_NUMBER_KEY, 0), tiles.get(0).getPositionX() + tiles.get(0).getWidth() / 2 - HERO_WIDTH / 2, TILE_HEIGHT, game.imageManager);
         hero.stand();
         heroStartPositionX = (int) hero.getPosition().x;
         bamboo = new Bamboo(tiles.get(0).getPositionX() + tiles.get(0).getWidth(), game.imageManager);
         best = prefs.getInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
+
+        timeAttackDeltaTime = 60f;
+        timeAttackNomalBitmapFont = game.fontProvider.getTimeAttackNomalBitmapFont();
+        timeAttackWarningBitmapFont = game.fontProvider.getTimeAttackWarningBitmapFont();
+
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
         Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -131,12 +143,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         super.render(delta);
-        game.batch.setProjectionMatrix(game.camera.combined);
         deltaTime += delta;
         bambooDeltaTime += delta;
 
-        game.camera.position.x = -100 + hero.getPosition().x + game.camera.viewportWidth / 2;
-        game.camera.update();
+        game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
         drawBackground();
@@ -155,7 +165,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             tile.draw(game.batch);
         }
 
-        if (isClicking && bambooDeltaTime >= 0.04 && !isFinishedClicking) {
+        if (isClicking && bambooDeltaTime >= 0.025 && !isFinishedClicking) {
             bambooDeltaTime = 0;
             game.soundManager.playBambooSound();
             bamboo.buildingBamboo();
@@ -181,6 +191,23 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         gamePauseButton.setPos(positionXZero + 20, game.HEIGHT - 60);
         gamePauseButton.draw(game.batch);
 
+        if (gameState == GameState.PLAY) {
+            if (gameMode == GameMode.NOMAL) {
+
+            } else if (gameMode == GameMode.TIME_ATTACK) {
+                timeAttackDeltaTime -= delta;
+                if (timeAttackDeltaTime > 5f) {
+                    layout.setText(timeAttackNomalBitmapFont, String.format("%.2f", timeAttackDeltaTime));
+                    timeAttackNomalBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
+                } else if (timeAttackDeltaTime > 0f) {
+                    layout.setText(timeAttackWarningBitmapFont, String.format("%.2f", timeAttackDeltaTime));
+                    timeAttackWarningBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
+                } else {
+                    //TODO Finish.
+                }
+            }
+        }
+
         game.batch.end();
 
         if (gameState == GameState.GAMEOVER) {
@@ -204,6 +231,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             pauseMenu();
             game.handler.showAds(true);
         }
+
+
+
+        game.camera.position.x = -100 + hero.getPosition().x + game.camera.viewportWidth / 2;
+        game.camera.update();
     }
 
     private void drawBlackAlphaScreen() {
@@ -341,7 +373,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         if (nextTileNumber > 1) {
             layout.setText(gameChainBitmapFont, nextTileNumber + " CHAIN");
-            gameChainBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 450);
+            gameChainBitmapFont.draw(game.batch, layout, hero.getPosition().x + hero.getWidth() / 2 - layout.width / 2, hero.getPosition().y + hero.getHeight() + 50);
         }
     }
 
@@ -353,8 +385,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     }
 
     private void moveToNextTile(int nextTileNumber) {
-        hero.getPosition().x += 3;
-        score += (0.5 * nextTileNumber);
+        hero.getPosition().x += 6;
+        score += (1 * nextTileNumber);
     }
 
     private int checkNextTileWithBambooLength() {
@@ -415,7 +447,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         if (gameState == GameState.GAMEOVER) {
             if (gameOverRestartButton.isPressed(clickPoint)) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game, gameMode));
             } else if (gameOverQuitButton.isPressed(clickPoint)) {
                 game.setScreen(new MenuScreen(game));
             }
@@ -423,7 +455,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             if (pauseResumeButton.isPressed(clickPoint)) {
                 gameState = GameState.PLAY;
             } else if (pauseRestartButton.isPressed(clickPoint)) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game, gameMode));
             } else if (pauseQuitButton.isPressed(clickPoint)) {
                 game.setScreen(new MenuScreen(game));
             } else if (pauseMusicButton.isPressed(clickPoint)) {

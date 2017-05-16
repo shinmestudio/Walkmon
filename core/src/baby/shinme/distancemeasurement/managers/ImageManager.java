@@ -127,4 +127,8 @@ public class ImageManager {
     public TextureRegion getCustomiseTitle() { return atlas.findRegion("customise-title"); }
 
     public TextureRegion getLeaderboardsComplex() { return atlas.findRegion("leaderboardsComplex"); }
+
+    public TextureRegion getModePanel() { return atlas.findRegion("mode-panel"); }
+
+    public TextureRegion getRingingAlarm() { return atlas.findRegion("ringing-alarm"); }
 }

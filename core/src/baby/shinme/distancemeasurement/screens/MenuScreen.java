@@ -21,6 +21,7 @@ import java.util.Random;
 import baby.shinme.distancemeasurement.DistanceMeasurement;
 import baby.shinme.distancemeasurement.constants.GameConstant;
 import baby.shinme.distancemeasurement.models.Button;
+import baby.shinme.distancemeasurement.models.GameMode;
 import baby.shinme.distancemeasurement.models.MainMenuState;
 import baby.shinme.distancemeasurement.sprites.Character;
 import baby.shinme.distancemeasurement.sprites.Tile;
@@ -70,6 +71,13 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
     private boolean showHaveToOverScore;
     private BitmapFont customiseLockedMessageBitmapFont;
     private int unlockScoreCondition = 250;
+
+    // Game mode
+    private TextureRegion gameModePanel;
+    private Button gameModeNomalButton;
+    private Button gameModeTimeAttackButton;
+    private Button gameModeQuitButton;
+    private BitmapFont gameModeMessageBitmapFont;
 
     public MenuScreen(DistanceMeasurement game) {
         this.game = game;
@@ -129,6 +137,12 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         settingCharacters();
         bestScore = prefs.getInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
 
+        gameModePanel = game.imageManager.getModePanel();
+        gameModeNomalButton = new Button(game.imageManager.getButtonBigYellowDown(), game.imageManager.getRightBig());
+        gameModeTimeAttackButton = new Button(game.imageManager.getButtonBigYellowDown(), game.imageManager.getRingingAlarm());
+        gameModeMessageBitmapFont = game.fontProvider.getGameModeMessageBitmapFont();
+        gameModeQuitButton = new Button(game.imageManager.getCross());
+
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
         Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -183,6 +197,28 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         if (state == MainMenuState.CHARACTER_SELECT) {
             drawCharacterSelector();
         }
+
+        if (state == MainMenuState.GAME_MODE_SELECT) {
+            drawGameModeSelector();
+        }
+    }
+
+    private void drawGameModeSelector() {
+        drawBlackAlphaScreen();
+        game.batch.begin();
+        game.batch.draw(gameModePanel, game.camera.position.x - gameModePanel.getRegionWidth() / 2, game.HEIGHT / 2 - gameModePanel.getRegionHeight() / 2);
+        gameModeNomalButton.setPos(game.camera.position.x - gameModeNomalButton.getRegionWidth() - 35, game.HEIGHT / 2 - gameModeNomalButton.getRegionHeight() / 2 + 15);
+        gameModeNomalButton.draw(game.batch);
+        gameModeTimeAttackButton.setPos(game.camera.position.x + 35, game.HEIGHT / 2 - gameModeTimeAttackButton.getRegionHeight() / 2 + 15);
+        gameModeTimeAttackButton.draw(game.batch);
+        layout.setText(gameModeMessageBitmapFont, "Nomal Play");
+        gameModeMessageBitmapFont.draw(game.batch, layout, gameModeNomalButton.getPosX() + gameModeNomalButton.getRegionWidth() / 2 - layout.width / 2, gameModeNomalButton.getPosY() - 10);
+        layout.setText(gameModeMessageBitmapFont, "Time Attack");
+        gameModeMessageBitmapFont.draw(game.batch, layout, gameModeTimeAttackButton.getPosX() + gameModeNomalButton.getRegionWidth() / 2 - layout.width / 2, gameModeTimeAttackButton.getPosY() - 10);
+        gameModeQuitButton.setPos(game.camera.position.x + gameModePanel.getRegionWidth() / 2 - gameModeQuitButton.getRegionWidth() + 10, game.HEIGHT / 2 + gameModePanel.getRegionHeight() / 2 - 5);
+        gameModeQuitButton.draw(game.batch);
+
+        game.batch.end();
     }
 
     private void settingCharacters() {
@@ -248,7 +284,6 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         creditsTitleBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 300);
         layout.setText(creditsContentsBitmapFont, creditsContents.toString(),
 				Color.WHITE, game.WIDTH, Align.center, true);
-       // creditsContentsBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width - 60, 230);
         creditsContentsBitmapFont.draw(game.batch, layout, 0, 230);
 
         game.batch.end();
@@ -318,7 +353,8 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         game.camera.unproject(touch);
         if (state == MainMenuState.NOMAL) {
             if (playButton.isPressed(beforeTouch) && playButton.isPressed(touch)) {
-                game.setScreen(new GameScreen(game));
+                //game.setScreen(new GameScreen(game));
+                state = MainMenuState.GAME_MODE_SELECT;
             } else if (informationButton.isPressed(beforeTouch) && informationButton.isPressed(touch)) {
                 state = MainMenuState.CREDITS;
             } else if (unlockedButton.isPressed(beforeTouch) && unlockedButton.isPressed(touch)) {
@@ -374,6 +410,14 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
                         }
                     }
                 }
+            }
+        } else if (state == MainMenuState.GAME_MODE_SELECT) {
+            if (gameModeQuitButton.isPressed(beforeTouch) && gameModeQuitButton.isPressed(touch)) {
+                state = MainMenuState.NOMAL;
+            } else if (gameModeNomalButton.isPressed(beforeTouch) && gameModeNomalButton.isPressed(touch)) {
+                game.setScreen(new GameScreen(game, GameMode.NOMAL));
+            } else if (gameModeTimeAttackButton.isPressed(beforeTouch) && gameModeTimeAttackButton.isPressed(touch)) {
+                game.setScreen(new GameScreen(game, GameMode.TIME_ATTACK));
             }
         }
 
