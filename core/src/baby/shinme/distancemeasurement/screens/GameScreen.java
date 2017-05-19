@@ -15,6 +15,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import baby.shinme.distancemeasurement.DistanceMeasurement;
@@ -32,7 +34,7 @@ import baby.shinme.distancemeasurement.models.GameState;
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private static final int TILE_MIN_SPACING = 10;
-    private static final int TILE_MAX_SPACING = 71;
+    private static final int TILE_MAX_SPACING = 70;
     private static final int TILE_COUNT = 7;
     private static final int TILE_HEIGHT = 48;
     private static final int HERO_WIDTH = 48;
@@ -66,7 +68,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private BitmapFont gameChainBitmapFont;
     private GlyphLayout layout;
     private float score;
-    private int best;
+    private int nomalBest;
+    private int timeAttackBest;
     private int heroStartPositionX;
     private ShapeRenderer shapeRenderer;
     private Preferences prefs;
@@ -82,6 +85,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private GameMode gameMode;
     private BitmapFont timeAttackNomalBitmapFont;
     private BitmapFont timeAttackWarningBitmapFont;
+    private BitmapFont bonusNumberBitmapFont;
 
     private boolean isClicking = false;
     private boolean isFinishedClicking = false;
@@ -128,11 +132,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         hero.stand();
         heroStartPositionX = (int) hero.getPosition().x;
         bamboo = new Bamboo(tiles.get(0).getPositionX() + tiles.get(0).getWidth(), game.imageManager);
-        best = prefs.getInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
+        nomalBest = prefs.getInteger(GameMode.NOMAL.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
+        timeAttackBest = prefs.getInteger(GameMode.TIME_ATTACK.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
 
         timeAttackDeltaTime = 60f;
         timeAttackNomalBitmapFont = game.fontProvider.getTimeAttackNomalBitmapFont();
         timeAttackWarningBitmapFont = game.fontProvider.getTimeAttackWarningBitmapFont();
+        bonusNumberBitmapFont = game.fontProvider.getBonusNumberBitmapFont();
+        stopWatchDeltaTime = 10f;
 
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
@@ -150,7 +157,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         game.batch.begin();
 
         drawBackground();
-        drawBamboo();
 
         layout.setText(gameMainScoreBitmapFont, "SCORE");
         gameMainScoreBitmapFont.draw(game.batch, "SCORE", game.camera.position.x + game.camera.viewportWidth / 2 - layout.width - 10, 480);
@@ -165,6 +171,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             tile.draw(game.batch);
         }
 
+        drawBamboo();
+
         if (isClicking && bambooDeltaTime >= 0.025 && !isFinishedClicking) {
             bambooDeltaTime = 0;
             game.soundManager.playBambooSound();
@@ -178,9 +186,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (isFinishedClicking && bamboo.getBamboos().size() > 0 && gameState == GameState.PLAY) {
             bamboo.rotateBamboo();
             if (bamboo.checkRotatedBamboo()) {
-                int nextTileNumber = checkNextTileWithBambooLength();
-                if (nextTileNumber > 0) {
-                    moveHero(nextTileNumber);
+                List<Object> nextTileNumber = checkNextTileWithBambooLength();
+                if (!nextTileNumber.isEmpty()) {
+                    int tileNumber = Integer.parseInt(nextTileNumber.get(0).toString());
+                    if (nextTileNumber.size() > 1) {
+                        layout.setText(bonusNumberBitmapFont, "+1");
+                        bonusNumberBitmapFont.draw(game.batch, layout, tiles.get(tileNumber).getPositionX() + tiles.get(tileNumber).getWidth() / 2 - layout.width / 2, tiles.get(tileNumber).getWidth() + 70);
+                    }
+
+                    moveHero(tileNumber, nextTileNumber.size() > 1);
                 } else {
                     gameOverCheck();
                 }
@@ -193,6 +207,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         if (gameState == GameState.PLAY) {
             if (gameMode == GameMode.NOMAL) {
+                if (score > 2000) {
+                    stopWatchDeltaTime -= delta;
+                    layout.setText(timeAttackNomalBitmapFont, String.format("%.2f", stopWatchDeltaTime));
+                    timeAttackNomalBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
+                } else if (score > 1000) {
+                    stopWatchDeltaTime -= delta;
+                    layout.setText(timeAttackWarningBitmapFont, String.format("%.2f", stopWatchDeltaTime));
+                    timeAttackWarningBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
+                }
 
             } else if (gameMode == GameMode.TIME_ATTACK) {
                 timeAttackDeltaTime -= delta;
@@ -203,7 +226,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                     layout.setText(timeAttackWarningBitmapFont, String.format("%.2f", timeAttackDeltaTime));
                     timeAttackWarningBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
                 } else {
-                    //TODO Finish.
+                    gameState = GameState.GAMEOVER;
                 }
             }
         }
@@ -231,8 +254,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             pauseMenu();
             game.handler.showAds(true);
         }
-
-
 
         game.camera.position.x = -100 + hero.getPosition().x + game.camera.viewportWidth / 2;
         game.camera.update();
@@ -295,11 +316,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     private void settingTile() {
         tiles = new Array<Tile>();
-        tiles.add(new Tile(20, game.imageManager, backgroundRandomNumber, 1));
+        tiles.add(new Tile(20, game.imageManager, backgroundRandomNumber, 1, true));
         for (int i = 1; i < TILE_COUNT; i++) {
+            int random = rand.nextInt(2);
             int tileRandomGap = (rand.nextInt(TILE_MAX_SPACING - TILE_MIN_SPACING) + TILE_MIN_SPACING) * 6;
             Tile beforeTile = tiles.get(i - 1);
-            tiles.add(new Tile(beforeTile.getPositionX() + beforeTile.getWidth() + tileRandomGap, game.imageManager, backgroundRandomNumber, 1));
+            tiles.add(new Tile(beforeTile.getPositionX() + beforeTile.getWidth() + tileRandomGap, game.imageManager, backgroundRandomNumber, random, true));
         }
     }
 
@@ -333,11 +355,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         layout.setText(gameMenuScoreBitmapFont, String.valueOf((int) score));
         gameMenuScoreBitmapFont.draw(game.batch, layout, game.camera.position.x + 210 - layout.width, 230);
         gameMenuTitleBitmapFont.draw(game.batch, "BEST", game.camera.position.x + 137, 170);
-        if (score > best) {
-            prefs.putInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, (int) score);
-            prefs.flush();
-            best = (int) score;
-        }
+        int best = saveBestScore();
         layout.setText(gameMenuScoreBitmapFont, String.valueOf(best));
         gameMenuScoreBitmapFont.draw(game.batch, String.valueOf(best), game.camera.position.x + 210 - layout.width, 150);
 
@@ -348,33 +366,57 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         game.batch.end();
     }
 
-    private void moveHero(int nextTileNumber) {
+    private void moveHero(int nextTileNumber, boolean isBonus) {
         Tile nextTile = tiles.get(nextTileNumber);
-        if (hero.getPosition().x >= nextTile.getPositionX() + nextTile.getWidth() / 2 - HERO_WIDTH / 2) {
+        if (hero.getPosition().x + 5 >= nextTile.getPositionX() + nextTile.getWidth() / 2 - HERO_WIDTH / 2) {
             for (int i = 0; i < nextTileNumber; i++) {
+                int random = rand.nextInt(2);
                 int tileRandomGap = (rand.nextInt(TILE_MAX_SPACING - TILE_MIN_SPACING) + TILE_MIN_SPACING) * 6;
                 tiles.removeIndex(0);
                 Tile lastTile = tiles.get(tiles.size - 1);
-                tiles.add(new Tile(lastTile.getPositionX() + lastTile.getWidth() + tileRandomGap, game.imageManager, backgroundRandomNumber, 0));
+                tiles.add(new Tile(lastTile.getPositionX() + lastTile.getWidth() + tileRandomGap, game.imageManager, backgroundRandomNumber, random, true));
             }
 
             hero.stand();
             hero.getPosition().x = nextTile.getPositionX() + nextTile.getWidth() / 2 - HERO_WIDTH / 2;
             reset();
-            if (score > best) {
-                prefs.putInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, (int) score);
-                prefs.flush();
-                best = (int) score;
+            saveBestScore();
+            if (score > 3000) {
+                stopWatchDeltaTime = 5f;
+            } else if (score > 2000) {
+                stopWatchDeltaTime = 7.5f;
+            } else if (score > 1000) {
+                stopWatchDeltaTime = 10f;
             }
         } else {
             hero.walk();
-            moveToNextTile(nextTileNumber);
+            moveToNextTile(nextTileNumber, isBonus);
         }
 
         if (nextTileNumber > 1) {
             layout.setText(gameChainBitmapFont, nextTileNumber + " CHAIN");
             gameChainBitmapFont.draw(game.batch, layout, hero.getPosition().x + hero.getWidth() / 2 - layout.width / 2, hero.getPosition().y + hero.getHeight() + 50);
         }
+    }
+
+    private int saveBestScore() {
+        int best = 0;
+        if (gameMode == GameMode.NOMAL) {
+            best = nomalBest;
+            if (score > nomalBest) {
+                prefs.putInteger(GameMode.NOMAL.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, (int) score);
+                prefs.flush();
+                best = (int) score;
+            }
+        } else if (gameMode == GameMode.TIME_ATTACK) {
+            best = timeAttackBest;
+            if (score > timeAttackBest) {
+                prefs.putInteger(GameMode.TIME_ATTACK.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, (int) score);
+                prefs.flush();
+                best = (int) score;
+            }
+        }
+        return best;
     }
 
     private void reset() {
@@ -384,12 +426,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         bamboo.setPositionX(tiles.get(0).getPositionX() + tiles.get(0).getWidth());
     }
 
-    private void moveToNextTile(int nextTileNumber) {
-        hero.getPosition().x += 6;
-        score += (1 * nextTileNumber);
+    private void moveToNextTile(int nextTileNumber, boolean isBonus) {
+        hero.getPosition().x += 5;
+        score += (1 * nextTileNumber) + (isBonus ? (1 * nextTileNumber) : 0);
     }
 
-    private int checkNextTileWithBambooLength() {
+    private List<Object> checkNextTileWithBambooLength() {
+        List<Object> list = new ArrayList<Object>();
         int bambooLength = bamboo.getBamboosLength();
         Tile nowTile = tiles.get(0);
         for (int i = 1; i < tiles.size; i++) {
@@ -397,11 +440,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
             if (nextTile.getPositionX() - (nowTile.getPositionX() + nowTile.getWidth()) <= bambooLength
                 && (nextTile.getPositionX() + nextTile.getWidth()) - (nowTile.getPositionX() + nowTile.getWidth()) >= bambooLength - 1) {
-                return i;
+                list.add(i);
+                if (nextTile.getPositionX() + nextTile.getWidth() / 2 - 6 - (nowTile.getPositionX() + nowTile.getWidth()) < bambooLength
+                        && (nextTile.getPositionX() + nextTile.getWidth() / 2 + 6) - (nowTile.getPositionX() + nowTile.getWidth()) >= bambooLength - 1) {
+                    list.add(true);
+                }
             }
         }
 
-        return 0;
+        return list;
     }
 
     @Override

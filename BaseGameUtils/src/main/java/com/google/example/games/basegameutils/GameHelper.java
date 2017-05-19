@@ -328,7 +328,6 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
 
     /** Returns whether or not the user is signed in. */
     public boolean isSignedIn() {
-        System.out.println("mGoogleApiClient : " + mGoogleApiClient);
         return mGoogleApiClient != null && mGoogleApiClient.isConnected();
     }
 
@@ -362,7 +361,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
     public void onStart(Activity act) {
         mActivity = act;
         mAppContext = act.getApplicationContext();
-
+        System.out.println("onStart : wwwwww");
         debugLog("onStart");
         assertConfigured("onStart");
 

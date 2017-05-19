@@ -34,7 +34,7 @@ public class Bamboo {
     public void rotateBamboo() {
         for (Sprite bamboo : bamboos) {
             if (bamboo.getRotation() != -90)
-                bamboo.rotate((float) -4.5);
+                bamboo.rotate((float) -3);
         }
     }
 

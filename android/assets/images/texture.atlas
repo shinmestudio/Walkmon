@@ -27,7 +27,7 @@ background
   index: 1
 bamboo
   rotate: false
-  xy: 997, 40
+  xy: 947, 53
   size: 10, 5
   orig: 10, 5
   offset: 0, 0
@@ -67,6 +67,20 @@ gameover-button-restart
   orig: 210, 52
   offset: 0, 0
   index: -1
+ground-point
+  rotate: false
+  xy: 997, 33
+  size: 24, 12
+  orig: 24, 12
+  offset: 0, 0
+  index: 1
+ground-point
+  rotate: false
+  xy: 997, 19
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 0
 hero0-stand
   rotate: false
   xy: 964, 261
@@ -228,13 +242,6 @@ hero6-stand
   orig: 48, 57
   offset: 0, 0
   index: 1
-hero6-stand
-  rotate: false
-  xy: 964, 492
-  size: 48, 57
-  orig: 48, 57
-  offset: 0, 0
-  index: 5
 hero6-walk
   rotate: false
   xy: 964, 492
@@ -242,6 +249,13 @@ hero6-walk
   orig: 48, 57
   offset: 0, 0
   index: 0
+hero6-stand
+  rotate: false
+  xy: 964, 492
+  size: 48, 57
+  orig: 48, 57
+  offset: 0, 0
+  index: 5
 hero6-stand
   rotate: false
   xy: 964, 433
@@ -613,224 +627,211 @@ filter: Nearest,Nearest
 repeat: none
 buttonBig-yellow-down
   rotate: false
-  xy: 656, 695
+  xy: 161, 460
   size: 157, 144
   orig: 157, 144
   offset: 0, 0
   index: -1
 buttonNormal-yellow-down
   rotate: false
-  xy: 656, 603
+  xy: 320, 382
   size: 98, 90
   orig: 98, 90
   offset: 0, 0
   index: -1
 customise-panel
   rotate: false
-  xy: 2, 204
+  xy: 452, 306
   size: 550, 200
   orig: 550, 200
   offset: 0, 0
   index: -1
 customise-title
   rotate: false
-  xy: 504, 428
+  xy: 504, 519
   size: 461, 88
   orig: 461, 88
   offset: 0, 0
   index: -1
+gameover
+  rotate: false
+  xy: 504, 609
+  size: 478, 85
+  orig: 478, 85
+  offset: 0, 0
+  index: -1
 gameover-panel
   rotate: false
-  xy: 2, 2
+  xy: 445, 104
   size: 550, 200
   orig: 550, 200
   offset: 0, 0
   index: -1
 hero2-walk
   rotate: false
-  xy: 947, 951
+  xy: 967, 560
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 1
 hero5-stand
   rotate: false
-  xy: 756, 646
+  xy: 967, 511
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 0
 hero5-stand
   rotate: false
-  xy: 947, 902
+  xy: 452, 557
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 1
 hero5-walk
   rotate: false
-  xy: 947, 902
+  xy: 452, 557
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 0
 hero5-stand
   rotate: false
-  xy: 947, 902
+  xy: 452, 557
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 5
 hero5-stand
   rotate: false
-  xy: 756, 597
+  xy: 452, 508
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 2
 hero5-stand
   rotate: false
-  xy: 756, 597
+  xy: 452, 508
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 4
 hero5-stand
   rotate: false
-  xy: 754, 548
+  xy: 253, 411
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 3
 hero5-walk
   rotate: false
-  xy: 754, 548
+  xy: 253, 411
   size: 48, 47
   orig: 48, 47
   offset: 0, 0
   index: 1
 hero8-stand
   rotate: false
-  xy: 856, 641
+  xy: 395, 339
   size: 48, 41
   orig: 48, 41
   offset: 0, 0
   index: 1
 hero8-stand
   rotate: false
-  xy: 856, 641
+  xy: 395, 339
   size: 48, 41
   orig: 48, 41
   offset: 0, 0
   index: 5
 hero8-stand
   rotate: false
-  xy: 806, 595
+  xy: 395, 296
   size: 48, 41
   orig: 48, 41
   offset: 0, 0
   index: 2
 hero8-stand
   rotate: false
-  xy: 806, 595
+  xy: 395, 296
   size: 48, 41
   orig: 48, 41
   offset: 0, 0
   index: 4
 hero8-stand
   rotate: false
-  xy: 856, 598
+  xy: 100, 404
   size: 48, 41
   orig: 48, 41
   offset: 0, 0
   index: 3
 hero8-walk
   rotate: false
-  xy: 806, 638
+  xy: 253, 365
   size: 48, 44
   orig: 48, 44
   offset: 0, 0
   index: 1
 information
   rotate: false
-  xy: 815, 776
+  xy: 161, 368
   size: 90, 90
   orig: 90, 90
   offset: 0, 0
   index: -1
 locked
   rotate: false
-  xy: 907, 826
+  xy: 984, 654
   size: 35, 40
   orig: 35, 40
   offset: 0, 0
   index: -1
 mode-panel
   rotate: false
-  xy: 2, 406
+  xy: 504, 696
   size: 500, 250
   orig: 500, 250
   offset: 0, 0
   index: -1
-pause-menu-background
-  rotate: false
-  xy: 504, 518
-  size: 150, 480
-  orig: 150, 480
-  offset: 0, 0
-  index: -1
 rightBig
   rotate: false
-  xy: 656, 841
+  xy: 2, 447
   size: 157, 157
   orig: 157, 157
   offset: 0, 0
   index: -1
 ringing-alarm
   rotate: false
-  xy: 815, 868
+  xy: 320, 474
   size: 130, 130
   orig: 130, 130
   offset: 0, 0
   index: -1
 tile3
   rotate: false
-  xy: 656, 553
+  xy: 2, 397
   size: 96, 48
   orig: 96, 48
   offset: 0, 0
   index: 1
+title
+  rotate: false
+  xy: 2, 2
+  size: 617, 100
+  orig: 617, 100
+  offset: 0, 0
+  index: -1
 tutorial
   rotate: false
-  xy: 2, 658
+  xy: 2, 606
   size: 500, 340
   orig: 500, 340
   offset: 0, 0
   index: -1
 unlocked
   rotate: false
-  xy: 815, 684
+  xy: 303, 290
   size: 90, 90
   orig: 90, 90
-  offset: 0, 0
-  index: -1
-
-texture4.png
-size: 1024,256
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-gameover
-  rotate: false
-  xy: 2, 2
-  size: 478, 85
-  orig: 478, 85
-  offset: 0, 0
-  index: -1
-title
-  rotate: false
-  xy: 2, 89
-  size: 617, 100
-  orig: 617, 100
   offset: 0, 0
   index: -1

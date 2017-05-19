@@ -12,16 +12,25 @@ import baby.shinme.distancemeasurement.managers.ImageManager;
  */
 public class Tile {
     private TextureRegion tile;
+    private TextureRegion point;
     private float positionX;
     private Random rand;
+    private boolean isPoint;
 
-    public Tile(float x, ImageManager imageManager, int tileNumber, int tileType) {
+    public Tile(float x, ImageManager imageManager, int tileNumber, int tileType, boolean isPoint) {
+        this.isPoint = isPoint;
         this.tile = imageManager.getTile(tileNumber).get(tileType);
+        if (isPoint) {
+            this.point = imageManager.getGroundPoint();
+        }
         positionX = x;
     }
 
     public void draw(SpriteBatch batch) {
         batch.draw(tile, positionX, 0);
+        if (isPoint) {
+            batch.draw(point, positionX + tile.getRegionWidth() / 2 - point.getRegionWidth() / 2, tile.getRegionHeight() - point.getRegionHeight());
+        }
     }
 
     public float getPositionX() {

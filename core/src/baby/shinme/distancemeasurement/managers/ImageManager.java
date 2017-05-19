@@ -131,4 +131,6 @@ public class ImageManager {
     public TextureRegion getModePanel() { return atlas.findRegion("mode-panel"); }
 
     public TextureRegion getRingingAlarm() { return atlas.findRegion("ringing-alarm"); }
+
+    public TextureRegion getGroundPoint() { return atlas.findRegion("ground-point"); }
 }

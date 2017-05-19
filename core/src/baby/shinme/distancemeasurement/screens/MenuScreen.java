@@ -65,12 +65,13 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
     private int selectedCharacterNumber;
     private Character selectedCharacter;
     private Button customiseQuitButton;
-    private int bestScore;
+    private int nomalBestScore;
+    private int timeAttackBestScore;
     private TextureRegion locked;
     private int haveToOverScore;
     private boolean showHaveToOverScore;
     private BitmapFont customiseLockedMessageBitmapFont;
-    private int unlockScoreCondition = 250;
+    private int unlockScoreCondition = 400;
 
     // Game mode
     private TextureRegion gameModePanel;
@@ -98,10 +99,10 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         gameTitle = game.imageManager.getTitle();
 
         tiles = new Array<Tile>();
-        tiles.add(new Tile(game.camera.position.x - game.camera.viewportWidth / 2, game.imageManager, backgroundRandomNumber, 1));
+        tiles.add(new Tile(game.camera.position.x - game.camera.viewportWidth / 2, game.imageManager, backgroundRandomNumber, 1, false));
         for (int i = 1; i <= 8; i++) {
             Tile beforeTile = tiles.get(i - 1);
-            tiles.add(new Tile(beforeTile.getPositionX() + beforeTile.getWidth() - 1, game.imageManager, backgroundRandomNumber, 1));
+            tiles.add(new Tile(beforeTile.getPositionX() + beforeTile.getWidth() - 1, game.imageManager, backgroundRandomNumber, 1, false));
         }
 
         playButton = new Button(game.imageManager.getButtonBigYellowDown(), game.imageManager.getRightBig());
@@ -123,7 +124,9 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         creditsContents.append("<Coding>\n");
         creditsContents.append("J_SHIN\n");
         creditsContents.append("<IMAGE / BGM / SOUND>\n");
-        creditsContents.append("http://opengameart.org/\n\n");
+        creditsContents.append("http://opengameart.org/\n");
+        creditsContents.append("<FONTS>\n");
+        creditsContents.append("http://www.1001freefonts.com/\n\n");
         creditsContents.append("for Dang Thi Hoa");
 
         customiseTitle = game.imageManager.getCustomiseTitle();
@@ -135,7 +138,8 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         customiseLockedMessageBitmapFont = game.fontProvider.getCustomiseLockedMessageBitmapFont();
 
         settingCharacters();
-        bestScore = prefs.getInteger(GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
+        nomalBestScore = prefs.getInteger(GameMode.NOMAL.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
+        timeAttackBestScore = prefs.getInteger(GameMode.TIME_ATTACK.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
 
         gameModePanel = game.imageManager.getModePanel();
         gameModeNomalButton = new Button(game.imageManager.getButtonBigYellowDown(), game.imageManager.getRightBig());
@@ -240,19 +244,19 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         drawBlackAlphaScreen();
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        game.batch.draw(customiseTitle, game.camera.position.x - customiseTitle.getRegionWidth() / 2, 320);
-        game.batch.draw(customisePanel, game.camera.position.x - customisePanel.getRegionWidth() / 2, 80);
+        game.batch.draw(customiseTitle, game.camera.position.x - customiseTitle.getRegionWidth() / 2, 325);
+        game.batch.draw(customisePanel, game.camera.position.x - customisePanel.getRegionWidth() / 2, 70);
         for (int i = 0; i < customiseCharacters.size; i++) {
             Sprite sprite = new Sprite((TextureRegion) customiseCharacters.get(i).getCharacter().getKeyFrame(deltaTime, true));
             sprite.setPosition(customiseCharacters.get(i).getPosition().x, customiseCharacters.get(i).getPosition().y);
 
-            if (i * unlockScoreCondition > bestScore) {
+            if (i * unlockScoreCondition > nomalBestScore || i * unlockScoreCondition > timeAttackBestScore) {
                 sprite.setColor(0, 0, 0, 1);
             }
 
             sprite.draw(game.batch);
 
-            if (i * unlockScoreCondition > bestScore) {
+            if (i * unlockScoreCondition > nomalBestScore || i * unlockScoreCondition > timeAttackBestScore) {
                 game.batch.draw(locked, sprite.getX() + sprite.getWidth() / 2 - locked.getRegionWidth() / 2, sprite.getY());
             }
         }
@@ -263,10 +267,13 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         } else {
             selectedCharacter.getPosition().x += 1;
         }
-        customiseQuitButton.setPos(game.camera.position.x + customisePanel.getRegionWidth() / 2 - 40, 275);
+        customiseQuitButton.setPos(game.camera.position.x + customisePanel.getRegionWidth() / 2 - 40, 265);
         customiseQuitButton.draw(game.batch);
-        layout.setText(customiseLockedMessageBitmapFont, "score : " + bestScore);
-        customiseLockedMessageBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 310);
+        layout.setText(customiseLockedMessageBitmapFont, "Nomal Score : " + nomalBestScore);
+        customiseLockedMessageBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 325);
+        layout.setText(customiseLockedMessageBitmapFont, "Time Attack Score : " + timeAttackBestScore);
+        customiseLockedMessageBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 300);
+
         if (showHaveToOverScore) {
             layout.setText(customiseLockedMessageBitmapFont, haveToOverScore + " score to unlock");
             customiseLockedMessageBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 185);
@@ -279,12 +286,12 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
     private void drawCredits() {
         drawBlackAlphaScreen();
         game.batch.begin();
-        game.batch.draw(gameTitle, game.camera.position.x - gameTitle.getRegionWidth() / 2, 320);
+        //game.batch.draw(gameTitle, game.camera.position.x - gameTitle.getRegionWidth() / 2, 320);
         layout.setText(creditsTitleBitmapFont, "CREDITS");
-        creditsTitleBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 300);
+        creditsTitleBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 410);
         layout.setText(creditsContentsBitmapFont, creditsContents.toString(),
 				Color.WHITE, game.WIDTH, Align.center, true);
-        creditsContentsBitmapFont.draw(game.batch, layout, 0, 230);
+        creditsContentsBitmapFont.draw(game.batch, layout, 0, 320);
 
         game.batch.end();
     }
@@ -386,7 +393,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
             } else if (quitButton.isPressed(beforeTouch) && quitButton.isPressed(touch)) {
                 Gdx.app.exit();
             } else if (leaderBoardButton.isPressed(beforeTouch) && leaderBoardButton.isPressed(touch)) {
-                //TODO google leaderboards
+                game.handler.showScore();
             }
         } else if (state == MainMenuState.CREDITS) {
             state = MainMenuState.NOMAL;
@@ -398,7 +405,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
             } else {
                 for (int i = 0; i < customiseCharacters.size; i++) {
                     if (customiseCharacters.get(i).isPressed(beforeTouch) && customiseCharacters.get(i).isPressed(touch)) {
-                        if (i * unlockScoreCondition > bestScore) {
+                        if (i * unlockScoreCondition > nomalBestScore || i * unlockScoreCondition > timeAttackBestScore) {
                             haveToOverScore = i * unlockScoreCondition;
                             showHaveToOverScore = true;
                         } else {

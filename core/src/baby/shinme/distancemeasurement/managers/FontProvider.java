@@ -22,6 +22,7 @@ public class FontProvider {
 	private BitmapFont gameChainBitmapFont;
 	private BitmapFont timeAttackNomalBitmapFont;
 	private BitmapFont timeAttackWarningBitmapFont;
+	private BitmapFont bonusNumberBitmapFont;
 
 	
 	public FontProvider() {
@@ -48,15 +49,18 @@ public class FontProvider {
 		gameMenuTitleBitmapFont = generator.generateFont(fontParameter);
 
 		fontParameter.color = Color.GREEN;
-		fontParameter.size = 45;
+		fontParameter.size = 55;
 		creditsTitleBitmapFont = generator.generateFont(fontParameter);
 
 		fontParameter.color = Color.SKY;
 		fontParameter.size = 20;
+		fontParameter.borderWidth = 0;
 		creditsContentsBitmapFont = generator.generateFont(fontParameter);
 
 		fontParameter.color = Color.WHITE;
 		fontParameter.size = 20;
+		fontParameter.borderColor = Color.BLACK;
+		fontParameter.borderWidth = 2;
 		customiseLockedMessageBitmapFont = generator.generateFont(fontParameter);
 
 		fontParameter.color = Color.YELLOW;
@@ -74,6 +78,11 @@ public class FontProvider {
 		fontParameter.color = Color.RED;
 		fontParameter.size = 50;
 		timeAttackWarningBitmapFont = generator.generateFont(fontParameter);
+
+		fontParameter.color = Color.BLACK;
+		fontParameter.size = 25;
+		fontParameter.borderWidth = 0;
+		bonusNumberBitmapFont = generator.generateFont(fontParameter);
 
 		generator.dispose();
 	}
@@ -103,6 +112,8 @@ public class FontProvider {
 	public BitmapFont getTimeAttackNomalBitmapFont() { return timeAttackNomalBitmapFont; }
 
 	public BitmapFont getTimeAttackWarningBitmapFont() { return timeAttackWarningBitmapFont; }
+
+	public BitmapFont getBonusNumberBitmapFont() { return bonusNumberBitmapFont; }
 
 	public void dispose() {
 		if (generator != null) {

@@ -157,6 +157,7 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 
 	@Override
 	public void showScore() {
+		System.out.println("isConnecting : " + gameHelper.isConnecting());
 		if (isSignedIn() == true) {
 			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(), "CgkIzafSgekTEAIQAA"), requestCode);
 		} else {
@@ -166,7 +167,6 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 
 	@Override
 	public boolean isSignedIn() {
-		System.out.println("gameHelper : " + gameHelper);
 		return gameHelper.isSignedIn();
 	}
 }

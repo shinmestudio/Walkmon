@@ -25,9 +25,6 @@ public class DistanceMeasurement extends Game {
 
 	public DistanceMeasurement(GPGSHandler handler) {
 		this.handler = handler;
-//		if (!handler.isSignedIn()) {
-//			handler.signIn();
-//		}
 	}
 
 	@Override
