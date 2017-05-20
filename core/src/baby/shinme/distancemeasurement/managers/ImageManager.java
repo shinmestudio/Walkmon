@@ -13,9 +13,9 @@ public class ImageManager {
 
     private TextureAtlas atlas;
 
-    public void load() {
-        //atlas = Assets.manager.get(Assets.IMAGES, TextureAtlas.class);
-        atlas = new TextureAtlas(Gdx.files.internal("images/texture.atlas"));
+    public void load(Assets assets) {
+        atlas = assets.manager.get(Assets.IMAGES, TextureAtlas.class);
+        //atlas = new TextureAtlas(Gdx.files.internal("images/texture.atlas"));
     }
 
     public Array<TextureAtlas.AtlasRegion> getBackgrounds() {
@@ -133,4 +133,8 @@ public class ImageManager {
     public TextureRegion getRingingAlarm() { return atlas.findRegion("ringing-alarm"); }
 
     public TextureRegion getGroundPoint() { return atlas.findRegion("ground-point"); }
+
+    public TextureRegion getGameoverButtonLeaderboard() { return atlas.findRegion("gameover-button-leaderboard"); }
+
+    public TextureRegion getLeaderboardsComplexBig() { return atlas.findRegion("leaderboardsComplex-big"); }
 }

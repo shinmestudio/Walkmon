@@ -127,7 +127,6 @@ public abstract class BaseGameActivity extends FragmentActivity implements
     }
 
     protected boolean isSignedIn() {
-        System.out.println("mHelper : " + mHelper);
         return mHelper.isSignedIn();
     }
 

@@ -646,7 +646,6 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
             // process finishes)
             return;
         }
-
         debugLog("Starting USER-INITIATED sign-in flow.");
 
         // indicate that user is actively trying to sign in (so we know to

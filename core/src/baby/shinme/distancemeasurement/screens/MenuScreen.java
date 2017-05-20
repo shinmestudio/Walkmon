@@ -48,6 +48,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
     private Button soundButton;
     private Button leaderBoardButton;
     private Button quitButton;
+    private Button medalButton;
     private Vector3 beforeTouch;
     private Preferences prefs;
     private Character character;
@@ -72,6 +73,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
     private boolean showHaveToOverScore;
     private BitmapFont customiseLockedMessageBitmapFont;
     private int unlockScoreCondition = 400;
+    private int bestScore;
 
     // Game mode
     private TextureRegion gameModePanel;
@@ -83,6 +85,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
     public MenuScreen(DistanceMeasurement game) {
         this.game = game;
         game.camera.setToOrtho(false, game.WIDTH, game.HEIGHT);
+
         state = MainMenuState.NOMAL;
         prefs = Gdx.app.getPreferences(GameConstant.PREFERENCES_KEY_NAME);
 
@@ -110,6 +113,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         quitButton = new Button(game.imageManager.getButtonSmallYellowDown(), game.imageManager.getPower());
         unlockedButton = new Button(game.imageManager.getButtonNormalYellowDown(), game.imageManager.getUnlocked());
         informationButton = new Button(game.imageManager.getButtonNormalYellowDown(), game.imageManager.getInformation());
+        medalButton = new Button(game.imageManager.getButtonSmallYellowDown(), game.imageManager.getMedal());
         musicButton = new Button(game.imageManager.getButtonSmallYellowDown(),
                 prefs.getBoolean(GameConstant.MUSIC_MAP_KEY, true) ? game.imageManager.getMusicOn() : game.imageManager.getMusicOff());
         soundButton = new Button(game.imageManager.getButtonSmallYellowDown(),
@@ -140,6 +144,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         settingCharacters();
         nomalBestScore = prefs.getInteger(GameMode.NOMAL.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
         timeAttackBestScore = prefs.getInteger(GameMode.TIME_ATTACK.name() + GameConstant.HIGH_SCORE_SAVE_MAP_KEY, 0);
+        bestScore = nomalBestScore > timeAttackBestScore ? nomalBestScore : timeAttackBestScore;
 
         gameModePanel = game.imageManager.getModePanel();
         gameModeNomalButton = new Button(game.imageManager.getButtonBigYellowDown(), game.imageManager.getRightBig());
@@ -170,14 +175,14 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
         informationButton.setPos(playButton.getPosX() - 100 - informationButton.getRegionWidth(), 115);
         musicButton.setPos(unlockedButton.getPosX() + unlockedButton.getRegionWidth() / 2 - musicButton.getRegionWidth() - 10, unlockedButton.getPosY() + unlockedButton.getRegionHeight() + 10);
         soundButton.setPos(unlockedButton.getPosX() + unlockedButton.getRegionWidth() / 2 + 10, unlockedButton.getPosY() + unlockedButton.getRegionHeight() + 10);
-        quitButton.setPos(informationButton.getPosX() + informationButton.getRegionWidth() / 2 - quitButton.getRegionWidth() - 10, informationButton.getPosY() + informationButton.getRegionHeight() + 10);
+        medalButton.setPos(informationButton.getPosX() + informationButton.getRegionWidth() / 2 - medalButton.getRegionWidth() - 10, informationButton.getPosY() + informationButton.getRegionHeight() + 10);
         leaderBoardButton.setPos(informationButton.getPosX() + informationButton.getRegionWidth() / 2 + 10, informationButton.getPosY() + informationButton.getRegionHeight() + 10);
         playButton.draw(game.batch);
         unlockedButton.draw(game.batch);
         informationButton.draw(game.batch);
         musicButton.draw(game.batch);
         soundButton.draw(game.batch);
-        quitButton.draw(game.batch);
+        medalButton.draw(game.batch);
         leaderBoardButton.draw(game.batch);
 
         for (int i = 0; i < tiles.size; i++) {
@@ -250,13 +255,15 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
             Sprite sprite = new Sprite((TextureRegion) customiseCharacters.get(i).getCharacter().getKeyFrame(deltaTime, true));
             sprite.setPosition(customiseCharacters.get(i).getPosition().x, customiseCharacters.get(i).getPosition().y);
 
-            if (i * unlockScoreCondition > nomalBestScore || i * unlockScoreCondition > timeAttackBestScore) {
+
+
+            if (i * unlockScoreCondition > bestScore) {
                 sprite.setColor(0, 0, 0, 1);
             }
 
             sprite.draw(game.batch);
 
-            if (i * unlockScoreCondition > nomalBestScore || i * unlockScoreCondition > timeAttackBestScore) {
+            if (i * unlockScoreCondition > bestScore) {
                 game.batch.draw(locked, sprite.getX() + sprite.getWidth() / 2 - locked.getRegionWidth() / 2, sprite.getY());
             }
         }
@@ -394,6 +401,8 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
                 Gdx.app.exit();
             } else if (leaderBoardButton.isPressed(beforeTouch) && leaderBoardButton.isPressed(touch)) {
                 game.handler.showScore();
+            } else if (medalButton.isPressed(beforeTouch) && medalButton.isPressed(touch)) {
+                game.handler.showAchievement();
             }
         } else if (state == MainMenuState.CREDITS) {
             state = MainMenuState.NOMAL;
@@ -405,7 +414,7 @@ public class MenuScreen extends ScreenAdapter implements InputProcessor {
             } else {
                 for (int i = 0; i < customiseCharacters.size; i++) {
                     if (customiseCharacters.get(i).isPressed(beforeTouch) && customiseCharacters.get(i).isPressed(touch)) {
-                        if (i * unlockScoreCondition > nomalBestScore || i * unlockScoreCondition > timeAttackBestScore) {
+                        if (i * unlockScoreCondition > bestScore) {
                             haveToOverScore = i * unlockScoreCondition;
                             showHaveToOverScore = true;
                         } else {

@@ -14,7 +14,7 @@ public class DistanceMeasurement extends Game {
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
 
-	public static final String TITLE = "The Walker";
+	public static final String TITLE = "Walkmon";
 
 	public GPGSHandler handler;
 	public SpriteBatch batch;

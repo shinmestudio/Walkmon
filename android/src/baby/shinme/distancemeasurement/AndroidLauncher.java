@@ -27,7 +27,9 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 	protected AdView adView;
 	private GameHelper gameHelper;
 	private final static int requestCode = 1;
-	private static final String ACHIEVEMENT_CODE = "CgkIzafSgekTEAIQAQ";
+	private static final String FIRST_PLAY_ACHIEVEMENT_CODE = "CgkIzafSgekTEAIQBA";
+	private static final String CLEAR_TIME_ATTACK_MODE_ACHIEVEMENT_CODE = "CgkIzafSgekTEAIQAw";
+	private static final String OPEN_ALL_CHARACTER_ACHIEVEMENT_CODE = "CgkIzafSgekTEAIQAQ";
 
 	Handler handler = new Handler() {
 
@@ -135,12 +137,27 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 	}
 
 	@Override
-	public void unlockAchievement() {
-			Games.Achievements.unlock(gameHelper.getApiClient(), ACHIEVEMENT_CODE);
+	public void unlockAchievement(int achievementCase) throws Exception {
+		switch (achievementCase) {
+			case 0 :
+				break;
+			case 1 :
+				//first play this game.
+				Games.Achievements.unlock(gameHelper.getApiClient(), FIRST_PLAY_ACHIEVEMENT_CODE);
+				break;
+			case 2 :
+				// did not die time attack mode.
+				Games.Achievements.unlock(gameHelper.getApiClient(), CLEAR_TIME_ATTACK_MODE_ACHIEVEMENT_CODE);
+				break;
+			case 3 :
+				// unlock all character
+				Games.Achievements.unlock(gameHelper.getApiClient(), OPEN_ALL_CHARACTER_ACHIEVEMENT_CODE);
+				break;
+		}
 	}
 
 	@Override
-	public void submitScore(int highScore) {
+	public void submitScore(int highScore) throws Exception {
 		if (isSignedIn() == true) {
 			Games.Leaderboards.submitScore(gameHelper.getApiClient(), "CgkIzafSgekTEAIQAA", highScore);
 		}
@@ -157,7 +174,6 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 
 	@Override
 	public void showScore() {
-		System.out.println("isConnecting : " + gameHelper.isConnecting());
 		if (isSignedIn() == true) {
 			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(), "CgkIzafSgekTEAIQAA"), requestCode);
 		} else {
@@ -168,5 +184,10 @@ public class AndroidLauncher extends AndroidApplication implements GPGSHandler {
 	@Override
 	public boolean isSignedIn() {
 		return gameHelper.isSignedIn();
+	}
+
+	@Override
+	public void reconnect() {
+		gameHelper.reconnectClient();
 	}
 }

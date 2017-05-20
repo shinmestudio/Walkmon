@@ -39,7 +39,7 @@ public class DesktopLauncher implements GPGSHandler {
 	}
 
 	@Override
-	public void unlockAchievement() {
+	public void unlockAchievement(int achievementCase) throws Exception {
 
 	}
 
@@ -61,5 +61,9 @@ public class DesktopLauncher implements GPGSHandler {
 	@Override
 	public boolean isSignedIn() {
 		return false;
+	}
+
+	@Override
+	public void reconnect() {
 	}
 }

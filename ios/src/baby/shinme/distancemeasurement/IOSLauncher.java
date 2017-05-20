@@ -42,12 +42,12 @@ public class IOSLauncher extends IOSApplication.Delegate implements GPGSHandler 
     }
 
     @Override
-    public void unlockAchievement() {
+    public void unlockAchievement(int achievementCase) throws Exception {
 
     }
 
     @Override
-    public void submitScore(int highScore) {
+    public void submitScore(int highScore) throws Exception {
 
     }
 
@@ -64,5 +64,9 @@ public class IOSLauncher extends IOSApplication.Delegate implements GPGSHandler 
     @Override
     public boolean isSignedIn() {
         return false;
+    }
+
+    @Override
+    public void reconnect() {
     }
 }

@@ -56,6 +56,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private TextureRegion gameOverPanel;
     private Button gameOverRestartButton;
     private Button gameOverQuitButton;
+    private Button gameoverLeaderBoardButton;
     private TextureRegion gameOverMessage;
     private TextureRegion tutorialImage;
 
@@ -90,6 +91,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     private boolean isClicking = false;
     private boolean isFinishedClicking = false;
 
+    private boolean saveArchiveStatus1 = false;
+    private boolean saveArchiveStatus2 = false;
+    private boolean saveArchiveStatus3 = false;
+    private boolean isStopWatch = false;
+
     public GameScreen(DistanceMeasurement game, GameMode gameMode) {
         this.game = game;
         this.gameMode = gameMode;
@@ -104,6 +110,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         gameChainBitmapFont = game.fontProvider.getGameChainBitmapFont();
         gameOverRestartButton = new Button(game.imageManager.getGameOverButtonPanel(), game.imageManager.getGameoverButtonRestart());
         gameOverQuitButton = new Button(game.imageManager.getGameOverButtonPanel(), game.imageManager.getGameoverButtonQuit());
+        gameoverLeaderBoardButton = new Button(game.imageManager.getGameoverButtonLeaderboard(), game.imageManager.getLeaderboardsComplexBig());
         gameOverMessage = game.imageManager.getGameOverMainMessage();
         pauseResumeButton = new Button(game.imageManager.getButtonSquareBeige(), game.imageManager.getForward());
         pauseRestartButton = new Button(game.imageManager.getButtonSquareBeige(), game.imageManager.getReturn());
@@ -125,8 +132,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         settingBackground();
         settingTile();
 
-        //gameState = prefs.getBoolean(GameConstant.FINISHED_TUTORIAL_KEY, false) ? GameState.PLAY : GameState.TUTORIAL;
-        gameState = GameState.TUTORIAL;
+        if (gameMode == GameMode.NOMAL) {
+            gameState = prefs.getBoolean(GameConstant.FINISHED_TUTORIAL_KEY, false) ? GameState.PLAY : GameState.TUTORIAL;
+        } else if (gameMode == GameMode.TIME_ATTACK) {
+            gameState = GameState.TUTORIAL;
+        }
 
         hero = new Character(prefs.getInteger(GameConstant.CHARACTER_NUMBER_KEY, 0), tiles.get(0).getPositionX() + tiles.get(0).getWidth() / 2 - HERO_WIDTH / 2, TILE_HEIGHT, game.imageManager);
         hero.stand();
@@ -140,6 +150,23 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         timeAttackWarningBitmapFont = game.fontProvider.getTimeAttackWarningBitmapFont();
         bonusNumberBitmapFont = game.fontProvider.getBonusNumberBitmapFont();
         stopWatchDeltaTime = 10f;
+
+        // first play this game
+        saveArchiveStatus1 = prefs.getBoolean(GameConstant.SAVE_ARCHIVE_STATUS_KEY + 1, false);
+        if (!saveArchiveStatus1) {
+            try {
+                game.handler.unlockAchievement(1);
+                prefs.putBoolean(GameConstant.SAVE_ARCHIVE_STATUS_KEY + 1, true);
+                prefs.flush();
+                saveArchiveStatus1 = true;
+            } catch (Exception e) {
+                //do nothing
+            }
+        }
+        // clear time attack mode
+        saveArchiveStatus2 = prefs.getBoolean(GameConstant.SAVE_ARCHIVE_STATUS_KEY + 2, false);
+        // unlock all character
+        saveArchiveStatus3 = prefs.getBoolean(GameConstant.SAVE_ARCHIVE_STATUS_KEY + 3, false);
 
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
@@ -173,7 +200,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         drawBamboo();
 
-        if (isClicking && bambooDeltaTime >= 0.025 && !isFinishedClicking) {
+        if (isClicking && bambooDeltaTime >= 0.020 && !isFinishedClicking) {
             bambooDeltaTime = 0;
             game.soundManager.playBambooSound();
             bamboo.buildingBamboo();
@@ -207,19 +234,23 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         if (gameState == GameState.PLAY) {
             if (gameMode == GameMode.NOMAL) {
-                if (score > 2000) {
+                if (score > 1000 && isStopWatch) {
                     stopWatchDeltaTime -= delta;
-                    layout.setText(timeAttackNomalBitmapFont, String.format("%.2f", stopWatchDeltaTime));
-                    timeAttackNomalBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
-                } else if (score > 1000) {
-                    stopWatchDeltaTime -= delta;
-                    layout.setText(timeAttackWarningBitmapFont, String.format("%.2f", stopWatchDeltaTime));
-                    timeAttackWarningBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
+                    if (stopWatchDeltaTime > 8f) {
+                        layout.setText(timeAttackNomalBitmapFont, String.format("%.2f", stopWatchDeltaTime));
+                        timeAttackNomalBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
+                    } else if (stopWatchDeltaTime > 0f) {
+                        layout.setText(timeAttackWarningBitmapFont, String.format("%.2f", stopWatchDeltaTime));
+                        timeAttackWarningBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
+                    } else {
+                        gameState = GameState.GAMEOVER;
+                    }
+
                 }
 
             } else if (gameMode == GameMode.TIME_ATTACK) {
                 timeAttackDeltaTime -= delta;
-                if (timeAttackDeltaTime > 5f) {
+                if (timeAttackDeltaTime > 8f) {
                     layout.setText(timeAttackNomalBitmapFont, String.format("%.2f", timeAttackDeltaTime));
                     timeAttackNomalBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
                 } else if (timeAttackDeltaTime > 0f) {
@@ -227,6 +258,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                     timeAttackWarningBitmapFont.draw(game.batch, layout, game.camera.position.x - layout.width / 2, 460 - layout.height / 2);
                 } else {
                     gameState = GameState.GAMEOVER;
+                    if (!saveArchiveStatus2) {
+                        try {
+                            game.handler.unlockAchievement(2);
+                            prefs.putBoolean(GameConstant.SAVE_ARCHIVE_STATUS_KEY + 2, true);
+                            prefs.flush();
+                        } catch (Exception e) {
+                            //do nothing
+                        }
+                    }
                 }
             }
         }
@@ -351,18 +391,20 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         game.batch.begin();
         game.batch.draw(gameOverMessage, game.camera.position.x - gameOverMessage.getRegionWidth() / 2, 320);
         game.batch.draw(gameOverPanel, game.camera.position.x - gameOverPanel.getRegionWidth() / 2, 80);
-        gameMenuTitleBitmapFont.draw(game.batch, "SCORE", game.camera.position.x + 125, 250);
+        gameMenuTitleBitmapFont.draw(game.batch, "SCORE", game.camera.position.x + 135, 250);
         layout.setText(gameMenuScoreBitmapFont, String.valueOf((int) score));
-        gameMenuScoreBitmapFont.draw(game.batch, layout, game.camera.position.x + 210 - layout.width, 230);
-        gameMenuTitleBitmapFont.draw(game.batch, "BEST", game.camera.position.x + 137, 170);
+        gameMenuScoreBitmapFont.draw(game.batch, layout, game.camera.position.x + 220 - layout.width, 230);
+        gameMenuTitleBitmapFont.draw(game.batch, "BEST", game.camera.position.x + 147, 170);
         int best = saveBestScore();
         layout.setText(gameMenuScoreBitmapFont, String.valueOf(best));
-        gameMenuScoreBitmapFont.draw(game.batch, String.valueOf(best), game.camera.position.x + 210 - layout.width, 150);
+        gameMenuScoreBitmapFont.draw(game.batch, String.valueOf(best), game.camera.position.x + 220 - layout.width, 150);
 
-        gameOverRestartButton.setPos(game.camera.position.x - 210, 195);
+        gameOverRestartButton.setPos(game.camera.position.x - 240, 195);
         gameOverRestartButton.draw(game.batch);
-        gameOverQuitButton.setPos(game.camera.position.x - 210, 115);
+        gameOverQuitButton.setPos(game.camera.position.x - 240, 115);
         gameOverQuitButton.draw(game.batch);
+        gameoverLeaderBoardButton.setPos(game.camera.position.x + 15, 135);
+        gameoverLeaderBoardButton.draw(game.batch);
         game.batch.end();
     }
 
@@ -382,12 +424,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             reset();
             saveBestScore();
             if (score > 3000) {
-                stopWatchDeltaTime = 5f;
+                stopWatchDeltaTime = 6f;
+                isStopWatch = true;
             } else if (score > 2000) {
-                stopWatchDeltaTime = 7.5f;
+                stopWatchDeltaTime = 8f;
+                isStopWatch = true;
             } else if (score > 1000) {
                 stopWatchDeltaTime = 10f;
+                isStopWatch = true;
             }
+
         } else {
             hero.walk();
             moveToNextTile(nextTileNumber, isBonus);
@@ -408,6 +454,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 prefs.flush();
                 best = (int) score;
             }
+            if (score >= 3200 && !saveArchiveStatus3) {
+                try {
+                    game.handler.unlockAchievement(3);
+                    prefs.putBoolean(GameConstant.SAVE_ARCHIVE_STATUS_KEY + 3, true);
+                    prefs.flush();
+                    saveArchiveStatus3 = true;
+                } catch (Exception e) {
+                    //do nothing
+                }
+            }
         } else if (gameMode == GameMode.TIME_ATTACK) {
             best = timeAttackBest;
             if (score > timeAttackBest) {
@@ -415,7 +471,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 prefs.flush();
                 best = (int) score;
             }
+            if (score >= 3200 && !saveArchiveStatus3) {
+                try {
+                    game.handler.unlockAchievement(3);
+                    prefs.putBoolean(GameConstant.SAVE_ARCHIVE_STATUS_KEY + 3, true);
+                    prefs.flush();
+                    saveArchiveStatus3 = true;
+                } catch (Exception e) {
+                    //do nothing
+                }
+            }
         }
+
         return best;
     }
 
@@ -497,6 +564,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                 game.setScreen(new GameScreen(game, gameMode));
             } else if (gameOverQuitButton.isPressed(clickPoint)) {
                 game.setScreen(new MenuScreen(game));
+            } else if (gameoverLeaderBoardButton.isPressed(clickPoint)) {
+                try {
+                    game.handler.submitScore((int) score);
+                } catch (Exception e) {
+                    //do nothing
+                }
             }
         } else if (gameState == GameState.PAUSE) {
             if (pauseResumeButton.isPressed(clickPoint)) {

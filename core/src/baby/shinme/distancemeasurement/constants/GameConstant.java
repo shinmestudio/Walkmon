@@ -9,6 +9,7 @@ public class GameConstant {
     public static final String HIGH_SCORE_SAVE_MAP_KEY = "HIGH_SCORE";
     public static final String FINISHED_TUTORIAL_KEY = "FINISHED_TUTORIAL";
     public static final String CHARACTER_NUMBER_KEY = "CHARACTER_NUMBER";
+    public static final String SAVE_ARCHIVE_STATUS_KEY = "SAVE_ARCHIVE_STATUS";
 
     public static final String PREFERENCES_KEY_NAME = "DistanceMeasurement";
 }

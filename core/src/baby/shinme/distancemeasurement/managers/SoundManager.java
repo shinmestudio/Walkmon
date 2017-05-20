@@ -73,7 +73,7 @@ public class SoundManager {
 	public SoundManager() {
 	}
 
-	public void load() {
+	public void load(Assets assets) {
 		prefs = Gdx.app.getPreferences(GameConstant.PREFERENCES_KEY_NAME);
 		if (prefs.contains(GameConstant.SOUND_MAP_KEY)) {
 			setSoundOn(prefs.getBoolean(GameConstant.SOUND_MAP_KEY));
@@ -82,14 +82,21 @@ public class SoundManager {
 			setMusicOn(prefs.getBoolean(GameConstant.MUSIC_MAP_KEY));
 		}
 
-		bambooSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bamboo.wav"));
-		inGameBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/game-background.mp3"));
+		bambooSound = assets.manager.get(Assets.BAMBOO_SOUND, Sound.class);
+		inGameBackgroundMusic = assets.manager.get(Assets.GAME_BACKGROUND_MUSIC, Music.class);
+		mainMenuBackgroundMusic = assets.manager.get(Assets.MAIN_BACKGROUND_MUSIC, Music.class);
+		gameoverMusic = assets.manager.get(Assets.GAMEOVER_MUSIC, Music.class);
+		creditMusic = assets.manager.get(Assets.CREDIT_MUSIC, Music.class);
+
+
+//		bambooSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bamboo.wav"));
+//		inGameBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/game-background.mp3"));
 		inGameBackgroundMusic.setLooping(true);
-		mainMenuBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/main-background.mp3"));
+//		mainMenuBackgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/main-background.mp3"));
 		mainMenuBackgroundMusic.setLooping(true);
-		gameoverMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/gameover.mp3"));
+//		gameoverMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/gameover.mp3"));
 		gameoverMusic.setLooping(true);
-		creditMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/credit.mp3"));
+//		creditMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/credit.mp3"));
 		creditMusic.setLooping(true);
 	}
 
